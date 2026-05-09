@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'; 
 import { HashRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import Home from './pages/Home';
-import EventDetails from './pages/EventDetails';
-import Profile from './pages/Profile';
-import Organizers from './pages/Organizers';
-import FeedbackForm from './pages/FeedbackForm';
+import Home from './pages/Home/Home';
+import EventDetails from './pages/EventDetails/EventDetails';
+import Profile from './pages/Profile/Profile';
+import Organizers from './pages/Organizers/Organizers';
+import FeedbackForm from './pages/FeedbackForm/FeedbackForm';
 import './App.css';
 import { auth } from '../src/firebase-auth';
 import { onAuthStateChanged } from "firebase/auth";
@@ -30,10 +30,12 @@ function App() {
   return (
     <Router>
       <header>
-        <div className="logo">OnlineTickets</div>
+        <Link to="/" className="logo-link">
+          <div className="logo">OnlineTickets</div>
+        </Link>
+
         <nav>
           <ul className="nav-menu">
-            <li><Link to="/">Головна</Link></li>
             <li><Link to="/organizers">Організатори</Link></li>
             {user && (<li><Link to="/feedback">Відгуки</Link></li>)}
             <li><Link to="/profile" className="profile-link">Мій профіль</Link></li>

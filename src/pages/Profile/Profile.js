@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { auth } from '../firebase-auth';
+import { auth } from '../../firebase-auth';
 import { 
   createUserWithEmailAndPassword, 
   signInWithEmailAndPassword, 
   signOut, 
   onAuthStateChanged 
 } from "firebase/auth";
+import './Profile.css';
 
 function Profile() {
   const [bookings, setBookings] = useState([]);

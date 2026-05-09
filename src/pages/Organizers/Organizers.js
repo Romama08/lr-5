@@ -1,4 +1,5 @@
 import React from 'react';
+import './Organizers.css';
 
 function Organizers() {
   return (

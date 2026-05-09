@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { auth, db } from '../firebase-auth'; 
+import { auth, db } from '../../firebase-auth'; 
 import { onAuthStateChanged } from "firebase/auth";
 import { 
   collection, 
@@ -10,6 +10,7 @@ import {
   serverTimestamp 
 } from "firebase/firestore"; 
 import { FaStar } from 'react-icons/fa';
+import './FeedbackForm.css';
 
 function FeedbackForm() {
   const [user, setUser] = useState(null);

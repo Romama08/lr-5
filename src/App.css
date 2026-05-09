@@ -1,28 +1,35 @@
-/* ===== 1. ЗАГАЛЬНІ СТИЛІ ===== */
+:root {
+    --primary: #838a1e;
+    --primary-hover: #fbbf24;
+    --dark-footer: #838a1e; 
+    --bg-light: #f4f7fa;
+    --white: #ffffff;
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
 * {
     box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
 body {
-    margin: 0;
-    font-family: 'Segoe UI', Arial, sans-serif;
-    background-color: #f4f7fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-light);
     color: #333;
     line-height: 1.6;
 }
 
-h2 {
-    text-align: center;
-    margin-bottom: 30px;
-    color: #838a1e;
-    font-size: 2rem;
+main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    width: 100%;
 }
 
-/* ===== 2. HEADER ТА НАВІГАЦІЯ ===== */
 header {
-    background-color: #838a1e;
-    color: white;
-    padding: 1rem 5%;
+    background-color: var(--primary);
+    padding: 15px 5%;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -33,461 +40,118 @@ header {
 }
 
 .logo {
-    font-size: 1.5rem;
-    font-weight: bold;
-    letter-spacing: 1px;
+    font-family: 'Arial Black', Gadget, sans-serif;
+    font-weight: 900;
+    font-size: 1.8rem;
+    color: var(--white);
+    text-transform: uppercase;
+    letter-spacing: -1px;
+}
+
+.logo-link {
+    text-decoration: none;
+    display: flex;
+    align-items: center;
 }
 
 .nav-menu {
     list-style: none;
     display: flex;
     gap: 25px;
-    padding: 0;
-    margin: 0;
+    align-items: center;
 }
 
 .nav-menu a {
     text-decoration: none;
     color: white;
-    font-weight: 500;
-    transition: color 0.3s;
+    font-weight: 600;
+    transition: 0.3s;
 }
 
 .nav-menu a:hover {
-    color: #fbbf24;
+    color: var(--primary-hover);
 }
 
-/* ===== 3. СТРІЧКА ФІЛЬТРІВ ===== */
-.filters-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 15px;
-    background: #ffffff;
-    padding: 15px 25px;
-    border-radius: 50px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    margin: 20px auto 40px auto;
-    max-width: fit-content;
-    border: 1px solid #e0e0e0;
-}
-
-.filter-group {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.filter-group label {
-    font-weight: 600;
-    color: #444;
-}
-
-.filter-group select {
-    padding: 8px 12px;
-    border: 1px solid #ddd;
+.profile-link {
+    background-color: rgba(255, 255, 255, 0.2);
+    padding: 8px 18px;
     border-radius: 20px;
-    background-color: #f9f9f9;
-    cursor: pointer;
-    outline: none;
-    transition: 0.3s;
 }
 
-.filter-group select:hover {
-    border-color: #838a1e;
-}
-
-.clear-btn {
-    padding: 6px 15px;
-    border: 1px solid #777;
-    border-radius: 4px;
-    background-color: #f0f0f0;
-    cursor: pointer;
-    font-size: 14px;
-}
-
-.clear-btn:hover {
-    background-color: #e2e2e2;
-}
-
-/* ===== 4. УНІВЕРСАЛЬНІ КНОПКИ ===== */
-.confirm-btn, .buy-now-btn, .reset-btn {
-    background: #838a1e;
-    color: white;
-    border: none;
-    padding: 12px 25px;
-    border-radius: 25px;
+button, .confirm-btn, .submit-review-btn, .book-btn {
+    background-color: var(--primary);
+    color: white ;
+    border: none ;
+    padding: 10px 20px;
+    border-radius: 25px ;
     font-weight: bold;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: 0.3s;
+    width: auto; 
+    min-width: 120px;
     display: inline-block;
 }
 
-.confirm-btn:hover, .buy-now-btn:hover, .reset-btn:hover {
-    background: #fbbf24;
+button:hover, 
+.confirm-btn:hover, 
+.submit-review-btn:hover {
+    background-color: var(--primary-hover);
     color: #333;
     transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+    transform: none ;
 }
 
 .cancel-btn {
-    background: none;
-    border: none;
-    color: #888;
-    padding: 8px 15px;
-    cursor: pointer;
-    transition: 0.3s;
-    text-decoration: underline;
+    background-color: #eee ;
+    color: #555 ;
+    border: none ;
 }
 
 .cancel-btn:hover {
-    color: #e63946;
+    background-color: #ddd ;
 }
 
-.cancel-order-btn {
-    background-color: #ff6b6b;
+footer {
+    background-color: var(--dark-footer) ;
     color: white;
-    border: none;
-    padding: 10px 25px;
-    border-radius: 20px;
-    font-weight: bold;
-    cursor: pointer;
-    display: block;
-    margin: 15px auto;
+    padding: 40px 20px;
+    text-align: center;
+    margin-top: auto;
 }
 
-/* ===== 5. СІТКА ПОДІЙ ТА КАРТКИ ===== */
-main {
-    padding: 20px 5%;
+.footer-info {
     max-width: 1200px;
-    margin: 0 auto;
-}
-
-.events-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 25px;
-}
-
-.event-card {
-    background: white;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-    transition: 0.3s;
-    cursor: pointer;
-}
-
-.event-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
-}
-
-.event-card img {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-}
-
-.event-content {
-    padding: 20px;
-}
-
-.event-content h3 {
-    margin-top: 0;
-    color: #838a1e;
-}
-
-.price {
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: #838a1e;
-    margin-top: 10px;
-}
-
-/* ===== 6. СТОРІНКА ДЕТАЛЕЙ ТА ФОРМА ===== */
-.details-main {
-    max-width: 800px;
-    margin: 40px auto;
-    padding: 20px;
-    text-align: center;
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-}
-
-.details-image-container img {
-    width: 100%;
-    max-height: 450px;
-    object-fit: cover;
-    border-radius: 10px;
-}
-
-
-.toggle-desc-btn {
-    display: block;
-    margin: 15px auto;
-    padding: 6px 15px;
-    border: 1px solid #777;
-    border-radius: 4px;
-    background-color: #f0f0f0;
-    cursor: pointer;
-    font-size: 14px;
-}
-
-.details-description {
-    text-align: left;
-    background: #f9f9f9;
-    padding: 25px;
-    border-radius: 8px;
-    margin: 25px 0;
-    border-left: 5px solid #838a1e;
-}
-
-.checkout-form-container {
-    max-width: 550px;
-    margin: 30px auto;
-    padding: 30px;
-    background: #ffffff;
-    border: 1px solid #eee;
-    border-top: 4px solid #838a1e;
-    border-radius: 12px;
-    text-align: left;
-    animation: fadeIn 0.4s ease;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-.input-group {
-    margin-bottom: 20px;
-}
-
-.input-group label {
-    display: block;
-    font-size: 14px;
-    font-weight: 600;
-    margin-bottom: 8px;
-    color: #555;
-}
-
-.input-group input {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    font-size: 16px;
-    transition: 0.3s;
-}
-
-.input-group input:focus {
-    border-color: #838a1e;
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(131, 138, 30, 0.1);
-}
-
-.price-display {
-    margin: 20px 0;
-    padding: 15px;
-    background: #f8f9f4;
-    border-radius: 10px;
-    text-align: center;
-    border: 1px dashed #838a1e;
-}
-
-.price-display p {
-    margin: 0;
-    font-size: 1.4rem;
-    font-weight: 800;
-    color: #5d7a2a;
-}
-
-.confirm-btn {
-    width: 100%;
-    margin-top: 10px;
-    padding: 15px;
-}
-
-.cancel-btn {
-    display: block;
-    width: 100%;
-    text-align: center;
-    margin-top: 15px;
-}
-
-/* ===== 7. ПРОФІЛЬ ===== */
-.profile-header {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    background: white;
-    padding: 20px;
-    border-radius: 12px;
-    margin-bottom: 30px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-}
-
-.profile-info {
-    text-align: left;
-}
-
-.avatar {
-    border-radius: 50%;
-    border: 3px solid #838a1e;
-    width: 100px;
-    height: 100px;
-    object-fit: cover;
-}
-
-.logout-btn {
-    background: none;
-    border: none;
-    color: #ff4d4d;
-    cursor: pointer;
-    font-weight: 600;
-    text-decoration: underline;
-    font-size: 14px;
-    padding: 0;
-}
-
-.booking-card {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    border-left: 6px solid #838a1e;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-}
-
-.badge.success {
-    background-color: #dcfce7;
-    color: #166534;
-    padding: 5px 12px;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: bold;
-}
-
-/* Кнопка скасування квитка у списку профілю */
-.profile-cancel-btn {
-    background-color: white;
-    color: #ff4d4d;
-    border: 2px solid #ff4d4d;
-    padding: 8px 18px;
-    border-radius: 20px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.profile-cancel-btn:hover {
-    background-color: #ff4d4d;
-    color: white;
-}
-
-.auth-toggle {
-    margin-top: 20px;
-    text-align: center;
-    cursor: pointer;
-    font-weight: 500;
-    color: #666;
-}
-
-.auth-toggle:hover {
-    color: #fbbf24; 
-}
-
-/* ===== 8. ВІДГУКИ ТА ЗІРКИ ===== */
-.star-rating input[type="radio"] {
-    display: none !important;
-}
-
-.star-rating {
+    margin: 0 auto 20px;
     display: flex;
     justify-content: center;
-    gap: 10px;
-    margin: 20px 0;
+    gap: 30px;
+    flex-wrap: wrap;
+    font-size: 0.9rem;
+    opacity: 0.9;
 }
 
-.star {
-    font-size: 2rem;
-    cursor: pointer;
-    color: #ccc;
-    transition: 0.2s;
+.copyright {
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 20px;
+    font-size: 0.8rem;
+    opacity: 0.6;
 }
 
-.star.filled {
-    color: #ffc107;
-}
-
-.stars-display {
-    color: #ffc107;
-    letter-spacing: 2px;
-}
-
-/* ===== 9. ФУТЕР ===== */
-footer {
-    background-color: #838a1e;
-    color: white;
-    text-align: center;
-    padding: 40px 20px;
-    margin-top: 40px;
-}
-
-.feedback-form textarea {
-    width: 100%;
-    min-height: 140px;          
-    padding: 15px 20px;        
-    border: 1px solid #ddd;     
-    border-radius: 12px;        
-    background-color: #f9f9f9;  
-    font-family: inherit;
-    font-size: 16px;            
-    color: #333;
-    resize: vertical;          
-    outline: none;
-    margin-bottom: 20px;
-    transition: all 0.3s ease;  
-}
-
-
-.feedback-form textarea:focus {
-    border-color: #838a1e;       
-    background-color: #ffffff;  
-    box-shadow: 0 0 8px rgba(131, 138, 30, 0.2); 
-}
-
-.feedback-form textarea::placeholder {
-    color: #999;
-    font-style: normal;
-    opacity: 0.8;
-}
-
-/* ===== 10. АДАПТИВНІСТЬ ===== */
 @media (max-width: 768px) {
-    .filters-container {
-        flex-direction: column;
-        border-radius: 15px;
-        width: 100%;
-    }
-
-    .booking-card, .profile-header {
-        flex-direction: column;
-        text-align: center;
-    }
-
     header {
         flex-direction: column;
         padding: 20px;
     }
-
+    
     .nav-menu {
         margin-top: 15px;
         gap: 15px;
+        font-size: 0.9rem;
     }
 }

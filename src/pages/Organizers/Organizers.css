@@ -1,0 +1,85 @@
+.organizers-main {
+    max-width: 900px;
+    margin: 40px auto;
+    text-align: center;
+}
+
+.organizers-main h1 {
+    color: #838a1e;
+    font-size: 2.5rem;
+    margin-bottom: 30px;
+    position: relative;
+}
+
+.organizers-main h1::after {
+    content: "";
+    display: block;
+    width: 60px;
+    height: 4px;
+    background: #fbbf24;
+    margin: 10px auto 0;
+    border-radius: 2px;
+}
+
+.organizers-main .about-card {
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    text-align: left;
+}
+
+.organizers-main p {
+    font-size: 1.2rem;
+    color: #555;
+    margin-bottom: 30px;
+    text-align: center;
+    line-height: 1.6;
+}
+
+.organizers-main ul {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.organizers-main li {
+    background: #f8f9f4;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid #eef2f6;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+}
+
+.organizers-main li:hover {
+    transform: scale(1.03);
+    border-color: #838a1e;
+    box-shadow: 0 5px 15px rgba(131, 138, 30, 0.1);
+}
+
+.organizers-main li strong {
+    color: #838a1e;
+    font-size: 1.1rem;
+    display: block;
+    margin-bottom: 8px;
+}
+
+@media (max-width: 600px) {
+    .organizers-main h1 {
+        font-size: 1.8rem;
+    }
+    
+    .organizers-main .about-card {
+        padding: 20px;
+    }
+    
+    .organizers-main ul {
+        grid-template-columns: 1fr;
+    }
+}

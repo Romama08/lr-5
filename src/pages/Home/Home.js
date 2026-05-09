@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import eventsData from '../events.json';
+import { useNavigate } from 'react-router-dom';
+import eventsData from '../../events.json';
+import './Home.css';
 
 function Home() {
   const navigate = useNavigate();
@@ -8,6 +9,7 @@ function Home() {
   const [priceRange, setPriceRange] = useState('all');
   const [showAbout, setShowAbout] = useState(true);
   const [filteredEvents, setFilteredEvents] = useState([]);
+  const [ratings, setRatings] = useState({});
 
   useEffect(() => {
     const today = new Date();
@@ -29,6 +31,23 @@ function Home() {
     });
     setFilteredEvents(filtered);
   }, [category, priceRange]);
+
+  useEffect(() => {
+    const fetchRatings = async () => {
+      const ratingsMap = {};
+      for (const event of eventsData) {
+        try {
+          const res = await fetch(`/api/reviews/${event.id}`);
+          const data = await res.json();
+          ratingsMap[event.id] = data.averageRating;
+        } catch (e) {
+          ratingsMap[event.id] = "0.0";
+        }
+      }
+      setRatings(ratingsMap);
+    };
+    fetchRatings();
+  }, []);
 
   return (
     <main>
@@ -65,6 +84,7 @@ function Home() {
               <img src={process.env.PUBLIC_URL + `/images/${event.image}`} alt={event.title} />
               <div className="event-content">
                 <h3>{event.title}</h3>
+                <div className="rating-badge">⭐ {ratings[event.id] || "0.0"} / 5.0</div>
                 <p>📅 {event.date}</p>
                 <p>📍 {event.location}</p>
                 <p className="price">Ціна: {event.price}</p>
@@ -76,28 +96,16 @@ function Home() {
 
       <section id="about" className="about-content">
         <h2>Про нас</h2>
-        
         <div style={{ textAlign: 'center', marginBottom: '20px' }}>
           <button className="reset-btn" onClick={() => setShowAbout(!showAbout)}>
             {showAbout ? "Приховати опис" : "Показати опис"}
           </button>
         </div>
-        
         {showAbout && (
           <div className="about-card">
             <img src="https://picsum.photos/seed/tickets/1000/400" alt="Про нас" className="about-img" />
-            
             <div className="description-box">
-              <p>OnlineTickets — це сучасна платформа для швидкого та зручного бронювання квитків на концерти, фестивалі, вистави та інші події.</p>
-              <p>Ми співпрацюємо з провідними організаторами заходів України та гарантуємо безпечну оплату.</p>
-              
-              <h3>Наші переваги:</h3>
-              <ul>
-                <li>Швидке онлайн-бронювання</li>
-                <li>Безпечні платежі</li>
-                <li>Підтримка 24/7</li>
-                <li>Електронні квитки</li>
-              </ul>
+              <p>OnlineTickets — це платформа для бронювання квитків з реальними відгуками користувачів.</p>
             </div>
           </div>
         )}
