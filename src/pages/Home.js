@@ -62,7 +62,7 @@ function Home() {
         <div className="events-grid">
           {filteredEvents.map((event) => (
             <article key={event.id} className="event-card" onClick={() => navigate(`/event/${event.id}`)}>
-              <img src={`/images/${event.image}`} alt={event.title} />
+              <img src={process.env.PUBLIC_URL + `/images/${event.image}`} alt={event.title} />
               <div className="event-content">
                 <h3>{event.title}</h3>
                 <p>📅 {event.date}</p>

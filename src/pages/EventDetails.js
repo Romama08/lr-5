@@ -59,7 +59,7 @@ function EventDetails() {
   return (
     <main className="details-main">
       <div className="details-image-container">
-        <img src={`/images/${event.image}`} alt={event.title} />
+        <img src={process.env.PUBLIC_URL + `/images/${event.image}`} alt={event.title} />
       </div>
 
       <div className="details-description">

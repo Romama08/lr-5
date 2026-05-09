@@ -1,13 +1,32 @@
-import React from 'react';
-import { HashRouter as Router, Routes, Route, Link } from 'react-router-dom'; 
+import React, { useState, useEffect } from 'react'; 
+import { HashRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Home from './pages/Home';
 import EventDetails from './pages/EventDetails';
 import Profile from './pages/Profile';
-import Organizers from './pages/Organizers'; 
-import FeedbackForm from './pages/FeedbackForm'; 
+import Organizers from './pages/Organizers';
+import FeedbackForm from './pages/FeedbackForm';
 import './App.css';
+import { auth } from '../src/firebase-auth';
+import { onAuthStateChanged } from "firebase/auth";
 
 function App() {
+  const [user, setUser] = useState(null);
+  const [bookings, setBookings] = useState([]);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+      if (currentUser) {
+        const storageKey = `userBookings_${currentUser.email}`;
+        const saved = JSON.parse(localStorage.getItem(storageKey)) || [];
+        setBookings(saved);
+      } else {
+        setBookings([]);
+      }
+    });
+    return () => unsubscribe();
+  }, []);
+
   return (
     <Router>
       <header>
@@ -15,8 +34,8 @@ function App() {
         <nav>
           <ul className="nav-menu">
             <li><Link to="/">Головна</Link></li>
-            <li><Link to="/organizers">Організатори</Link></li> 
-            <li><Link to="/feedback">Відгуки</Link></li> 
+            <li><Link to="/organizers">Організатори</Link></li>
+            {user && (<li><Link to="/feedback">Відгуки</Link></li>)}
             <li><Link to="/profile" className="profile-link">Мій профіль</Link></li>
           </ul>
         </nav>
@@ -27,7 +46,7 @@ function App() {
         <Route path="/event/:id" element={<EventDetails />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/organizers" element={<Organizers />} />
-        <Route path="/feedback" element={<FeedbackForm />} /> 
+        <Route path="/feedback" element={<FeedbackForm />} />
       </Routes>
 
       <footer>

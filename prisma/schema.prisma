@@ -1,0 +1,18 @@
+// This is your Prisma schema file
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Review {
+  id        Int      @id @default(autoincrement())
+  eventId   Int      // ID події (відповідає ID з вашого events.json)
+  rating    Int      // Оцінка від 1 до 5
+  comment   String?  // Текст відгуку (може бути порожнім)
+  createdAt DateTime @default(now())
+}
