@@ -28,8 +28,11 @@
     "gh-pages": "^6.3.0",
     "nodemon": "^3.1.14"
   },
+  "overrides": {
+    "typescript": "4.9.5"
+  },
   "scripts": {
-    "server": "nodemon server.js",
+    "server": "node server.js",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "predeploy": "npm run build",
