@@ -9,18 +9,14 @@ require('dotenv').config();
 const app = express();
 const prisma = new PrismaClient();
 
-// Порт для сервера (Render/Railway зазвичай дають свій, тому використовуємо змінну оточення)
 const PORT = process.env.PORT || 5000;
 const JWT_SECRET = process.env.JWT_SECRET || 'super_secret_key_123';
 
-// --- Middleware ---
 app.use(cors());
 app.use(express.json());
 
-// Роздача статичних файлів React після npm run build
 app.use(express.static(path.join(__dirname, 'build')));
 
-// --- Middleware для авторизації (JWT) ---
 const authenticate = (req, res, next) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
@@ -36,9 +32,6 @@ const authenticate = (req, res, next) => {
     }
 };
 
-// --- AUTH ROUTES ---
-
-// Реєстрація користувача
 app.post('/api/auth/register', async (req, res) => {
     const { email, password } = req.body;
     try {
@@ -55,7 +48,6 @@ app.post('/api/auth/register', async (req, res) => {
     }
 });
 
-// Вхід користувача
 app.post('/api/auth/login', async (req, res) => {
     const { email, password } = req.body;
     try {
@@ -72,9 +64,6 @@ app.post('/api/auth/login', async (req, res) => {
     }
 });
 
-// --- BOOKINGS ROUTES ---
-
-// Отримати квитки поточного користувача
 app.get('/api/bookings', authenticate, async (req, res) => {
     try {
         const bookings = await prisma.booking.findMany({
@@ -86,7 +75,6 @@ app.get('/api/bookings', authenticate, async (req, res) => {
     }
 });
 
-// Створити нове бронювання
 app.post('/api/bookings', authenticate, async (req, res) => {
     const { title, date, location, quantity, totalPrice } = req.body;
     try {
@@ -106,9 +94,6 @@ app.post('/api/bookings', authenticate, async (req, res) => {
     }
 });
 
-// --- REVIEWS ROUTES ---
-
-// Отримати відгуки для події
 app.get('/api/reviews/:eventId', async (req, res) => {
     const eventId = parseInt(req.params.eventId);
     try {
@@ -123,7 +108,6 @@ app.get('/api/reviews/:eventId', async (req, res) => {
     }
 });
 
-// Додати новий відгук (тільки для авторизованих)
 app.post('/api/reviews', authenticate, async (req, res) => {
     const { eventId, rating, comment } = req.body;
     try {
@@ -141,20 +125,13 @@ app.post('/api/reviews', authenticate, async (req, res) => {
     }
 });
 
-// --- FRONTEND ROUTING ---
-
-// Важливо: цей блок має бути останнім серед маршрутів
-// Будь-який запит, що не починається з /api, віддає React-додаток
 app.get(/.*/, (req, res) => {
-    // Якщо запит іде до API, але він не був оброблений вище - видаємо 404
     if (req.url.startsWith('/api')) {
         return res.status(404).json({ error: "API route not found" });
     }
-    // Для всього іншого віддаємо React
     res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
 
-// Запуск сервера
 app.listen(PORT, () => {
     console.log(`🚀 Сервер запущено на: http://localhost:${PORT}`);
 });

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-// Імпортуємо тільки те, що треба для Firestore
 import { db } from '../../firebase-auth'; 
 import { 
   collection, 
@@ -23,17 +22,14 @@ function FeedbackForm() {
   const [allReviews, setAllReviews] = useState([]);
 
   useEffect(() => {
-    // 1. Перевірка авторизації через твою нову систему (Postgres)
     const savedUser = localStorage.getItem('user');
     if (savedUser) {
         const parsedUser = JSON.parse(savedUser);
         setUser(parsedUser);
         setEmail(parsedUser.email);
-        // Якщо у юзера є ім'я в профілі - ставимо його
         if (parsedUser.name) setName(parsedUser.name);
     }
 
-    // 2. СЛУХАЄМО FIREBASE (Realtime відгуки)
     const q = query(collection(db, "reviews"), orderBy("createdAt", "desc"));
     const unsubscribeReviews = onSnapshot(q, (snapshot) => {
       const reviewsData = snapshot.docs.map(doc => ({
@@ -54,20 +50,18 @@ function FeedbackForm() {
     }
 
     try {
-      // ПУБЛІКУЄМО В FIREBASE
       await addDoc(collection(db, "reviews"), {
         name: name || "Анонім",
         email: email,
         rating: rating,
         comment: comment,
-        createdAt: serverTimestamp() // Штамп часу Firebase
+        createdAt: serverTimestamp() 
       });
 
       setSubmitted(true);
       setRating(null);
       setComment('');
-      
-      // Якщо юзер не залогінений, очищуємо поля
+
       if (!user) {
         setName('');
         setEmail('');
@@ -139,7 +133,7 @@ function FeedbackForm() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)} 
                 required 
-                disabled={!!user} // Якщо залогінений, email не міняємо
+                disabled={!!user} 
               />
             </div>
           </div>
@@ -169,7 +163,6 @@ function FeedbackForm() {
               </div>
               <p>{rev.comment}</p>
               <small>
-                {/* Форматування дати з об'єкта Firebase Timestamp */}
                 {rev.createdAt?.toDate ? rev.createdAt.toDate().toLocaleDateString('uk-UA') : "Щойно"}
               </small>
             </div>

@@ -21,7 +21,6 @@ function EventDetails() {
 
   const event = eventsData.find(e => e.id === eventIdInt);
 
-  // ВАЖЛИВО: Огортаємо в useCallback, щоб уникнути помилок рендеру
   const loadReviewsData = useCallback(async (pageNum) => {
     try {
       const res = await fetch(`/api/reviews/${id}?page=${pageNum}`);
@@ -29,7 +28,6 @@ function EventDetails() {
       
       console.log("--- DEBUG REVIEWS ---", data);
 
-      // Гнучка перевірка формату: масив або об'єкт
       const actualReviews = Array.isArray(data) ? data : (data.reviews || []);
       
       setReviews(actualReviews);
@@ -46,7 +44,7 @@ function EventDetails() {
       console.error("Помилка завантаження відгуків:", e);
       setReviews([]);
     }
-  }, [id]); // Функція оновиться тільки при зміні ID події
+  }, [id]);
 
   useEffect(() => {
     const savedUser = localStorage.getItem('user');
@@ -54,7 +52,7 @@ function EventDetails() {
       setUser(JSON.parse(savedUser));
     }
     loadReviewsData(page);
-  }, [page, loadReviewsData]); // Тепер залежності правильні
+  }, [page, loadReviewsData]);
 
   if (!event) return <div className="details-main"><h2>Подію не знайдено</h2></div>;
 
@@ -174,7 +172,6 @@ function EventDetails() {
                 <div className="review-stars">
                     {"★".repeat(rev.rating || 0)}{"☆".repeat(5-(rev.rating || 0))}
                 </div>
-                {/* Перевірка на вкладений об'єкт user */}
                 <span className="review-author">{rev.user?.email || "Анонімний користувач"}</span>
                 <p className="review-text">{rev.comment}</p>
                 <span className="review-date">

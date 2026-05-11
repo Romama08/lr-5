@@ -20,7 +20,7 @@ function Profile() {
     }, []);
 const fetchBookings = async (token) => {
     try {
-        const res = await fetch('/api/bookings', { // Шлях має бути ТІЛЬКИ ТАКИМ
+        const res = await fetch('/api/bookings', { 
             method: 'GET',
             headers: { 
                 'Authorization': `Bearer ${token}`,
@@ -30,7 +30,7 @@ const fetchBookings = async (token) => {
         
         if (res.ok) {
             const data = await res.json();
-            console.log("Отримані квитки:", data); // Перевір це в консолі F12!
+            console.log("Отримані квитки:", data);
             setBookings(data);
         } else {
             console.error("Сервер повернув помилку:", res.status);
@@ -40,7 +40,6 @@ const fetchBookings = async (token) => {
     }
 };
 
-    // ФУНКЦІЯ СКАСУВАННЯ БРОНЮВАННЯ
     const handleCancelBooking = async (id) => {
         if (!window.confirm("Ви впевнені, що хочете скасувати це бронювання?")) return;
 
@@ -52,7 +51,6 @@ const fetchBookings = async (token) => {
             });
 
             if (res.ok) {
-                // Видаляємо квиток зі списку на екрані
                 setBookings(bookings.filter(b => b.id !== id));
             } else {
                 alert("Не вдалося скасувати бронювання на сервері");

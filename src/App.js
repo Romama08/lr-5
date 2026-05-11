@@ -10,7 +10,6 @@ import './App.css';
 function App() {
   const [user, setUser] = useState(null);
 
-  // Функція для перевірки авторизації
   const checkAuth = () => {
     const savedUser = localStorage.getItem('user');
     const token = localStorage.getItem('token');
@@ -22,13 +21,10 @@ function App() {
   };
 
   useEffect(() => {
-    // Перевіряємо при першому завантаженні
     checkAuth();
 
-    // Слухаємо подію storage (щоб меню оновлювалося, якщо зайти в іншому вікні)
     window.addEventListener('storage', checkAuth);
-    
-    // Створюємо кастомну подію для оновлення стану всередині одного вікна
+
     window.addEventListener('authChange', checkAuth);
 
     return () => {
@@ -47,7 +43,6 @@ function App() {
         <nav>
           <ul className="nav-menu">
             <li><Link to="/organizers">Організатори</Link></li>
-            {/* Відгуки доступні тільки залогіненим */}
             {user && (<li><Link to="/feedback">Відгуки</Link></li>)}
             <li>
               <Link to="/profile" className="profile-link">
