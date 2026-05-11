@@ -1,7 +1,7 @@
 {
   "name": "my-react-app",
   "version": "0.1.0",
-  "homepage": "https://Romama08.github.io/lr-5",
+  "homepage": ".",
   "private": true,
   "proxy": "http://localhost:5000",
   "dependencies": {
