@@ -35,25 +35,39 @@ function Home() {
   useEffect(() => {
     const fetchRatings = async () => {
       const ratingsMap = {};
-      for (const event of eventsData) {
+      await Promise.all(eventsData.map(async (event) => {
         try {
           const res = await fetch(`/api/reviews/${event.id}`);
           const data = await res.json();
-          ratingsMap[event.id] = data.averageRating;
+          
+          if (Array.isArray(data)) {
+            if (data.length > 0) {
+              const sum = data.reduce((acc, r) => acc + (r.rating || 0), 0);
+              ratingsMap[event.id] = (sum / data.length).toFixed(1);
+            } else {
+              ratingsMap[event.id] = "0.0";
+            }
+          } else if (data && data.averageRating) {
+            ratingsMap[event.id] = data.averageRating;
+          } else {
+            ratingsMap[event.id] = "0.0";
+          }
         } catch (e) {
           ratingsMap[event.id] = "0.0";
         }
-      }
-      setRatings(ratingsMap);
+      }));
+      setRatings({ ...ratingsMap });
     };
-    fetchRatings();
+
+    if (eventsData.length > 0) {
+      fetchRatings();
+    }
   }, []);
 
   return (
     <main>
       <section id="events">
         <h2>Майбутні події</h2>
-        
         <div className="filters-container">
           <div className="filter-group">
             <label>Категорія:</label>
@@ -73,9 +87,7 @@ function Home() {
               <option value="high">від 1000 грн</option>
             </select>
           </div>
-          <button className="reset-btn" onClick={() => {setCategory('all'); setPriceRange('all')}}>
-            Очистити
-          </button>
+          <button className="reset-btn" onClick={() => {setCategory('all'); setPriceRange('all')}}>Очистити</button>
         </div>
 
         <div className="events-grid">

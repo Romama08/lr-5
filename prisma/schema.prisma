@@ -3,14 +3,36 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  password  String
+  reviews   Review[]
+  bookings  Booking[]
+  createdAt DateTime  @default(now())
 }
 
 model Review {
   id        Int      @id @default(autoincrement())
-  eventId   Int      // Зв'язок з вашим events.json
-  rating    Int      // 1-5 зірок
+  eventId   Int
+  rating    Int
   comment   String?
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())
+}
+
+model Booking {
+  id         Int    @id @default(autoincrement())
+  title      String
+  date       String
+  location   String
+  quantity   Int
+  totalPrice Int
+  userId     Int
+  user       User   @relation(fields: [userId], references: [id])
 }

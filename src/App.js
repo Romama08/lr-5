@@ -6,25 +6,35 @@ import Profile from './pages/Profile/Profile';
 import Organizers from './pages/Organizers/Organizers';
 import FeedbackForm from './pages/FeedbackForm/FeedbackForm';
 import './App.css';
-import { auth } from '../src/firebase-auth';
-import { onAuthStateChanged } from "firebase/auth";
 
 function App() {
   const [user, setUser] = useState(null);
-  const [bookings, setBookings] = useState([]);
+
+  // Функція для перевірки авторизації
+  const checkAuth = () => {
+    const savedUser = localStorage.getItem('user');
+    const token = localStorage.getItem('token');
+    if (savedUser && token) {
+      setUser(JSON.parse(savedUser));
+    } else {
+      setUser(null);
+    }
+  };
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-      if (currentUser) {
-        const storageKey = `userBookings_${currentUser.email}`;
-        const saved = JSON.parse(localStorage.getItem(storageKey)) || [];
-        setBookings(saved);
-      } else {
-        setBookings([]);
-      }
-    });
-    return () => unsubscribe();
+    // Перевіряємо при першому завантаженні
+    checkAuth();
+
+    // Слухаємо подію storage (щоб меню оновлювалося, якщо зайти в іншому вікні)
+    window.addEventListener('storage', checkAuth);
+    
+    // Створюємо кастомну подію для оновлення стану всередині одного вікна
+    window.addEventListener('authChange', checkAuth);
+
+    return () => {
+      window.removeEventListener('storage', checkAuth);
+      window.removeEventListener('authChange', checkAuth);
+    };
   }, []);
 
   return (
@@ -37,8 +47,13 @@ function App() {
         <nav>
           <ul className="nav-menu">
             <li><Link to="/organizers">Організатори</Link></li>
+            {/* Відгуки доступні тільки залогіненим */}
             {user && (<li><Link to="/feedback">Відгуки</Link></li>)}
-            <li><Link to="/profile" className="profile-link">Мій профіль</Link></li>
+            <li>
+              <Link to="/profile" className="profile-link">
+                {user ? 'Мій профіль' : 'Увійти'}
+              </Link>
+            </li>
           </ul>
         </nav>
       </header>

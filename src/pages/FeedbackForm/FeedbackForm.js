@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { auth, db } from '../../firebase-auth'; 
-import { onAuthStateChanged } from "firebase/auth";
+// Імпортуємо тільки те, що треба для Firestore
+import { db } from '../../firebase-auth'; 
 import { 
   collection, 
   addDoc, 
@@ -23,14 +23,17 @@ function FeedbackForm() {
   const [allReviews, setAllReviews] = useState([]);
 
   useEffect(() => {
-    const unsubscribeAuth = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-      if (currentUser) {
-        setEmail(currentUser.email);
-        if (currentUser.displayName) setName(currentUser.displayName);
-      }
-    });
+    // 1. Перевірка авторизації через твою нову систему (Postgres)
+    const savedUser = localStorage.getItem('user');
+    if (savedUser) {
+        const parsedUser = JSON.parse(savedUser);
+        setUser(parsedUser);
+        setEmail(parsedUser.email);
+        // Якщо у юзера є ім'я в профілі - ставимо його
+        if (parsedUser.name) setName(parsedUser.name);
+    }
 
+    // 2. СЛУХАЄМО FIREBASE (Realtime відгуки)
     const q = query(collection(db, "reviews"), orderBy("createdAt", "desc"));
     const unsubscribeReviews = onSnapshot(q, (snapshot) => {
       const reviewsData = snapshot.docs.map(doc => ({
@@ -40,10 +43,7 @@ function FeedbackForm() {
       setAllReviews(reviewsData);
     });
 
-    return () => {
-      unsubscribeAuth();
-      unsubscribeReviews();
-    };
+    return () => unsubscribeReviews();
   }, []);
 
   const handleSubmit = async (e) => {
@@ -54,17 +54,20 @@ function FeedbackForm() {
     }
 
     try {
+      // ПУБЛІКУЄМО В FIREBASE
       await addDoc(collection(db, "reviews"), {
         name: name || "Анонім",
         email: email,
         rating: rating,
         comment: comment,
-        createdAt: serverTimestamp()
+        createdAt: serverTimestamp() // Штамп часу Firebase
       });
 
       setSubmitted(true);
       setRating(null);
       setComment('');
+      
+      // Якщо юзер не залогінений, очищуємо поля
       if (!user) {
         setName('');
         setEmail('');
@@ -72,7 +75,8 @@ function FeedbackForm() {
       
       setTimeout(() => setSubmitted(false), 5000);
     } catch (error) {
-      console.error("Помилка:", error);
+      console.error("Помилка запису в Firebase:", error);
+      alert("Не вдалося відправити відгук у Firebase");
     }
   };
 
@@ -99,6 +103,7 @@ function FeedbackForm() {
                     <input 
                       type="radio" 
                       name="rating" 
+                      style={{ display: 'none' }}
                       value={ratingValue} 
                       onClick={() => setRating(ratingValue)}
                     />
@@ -108,6 +113,7 @@ function FeedbackForm() {
                       size={35}
                       onMouseEnter={() => setHover(ratingValue)}
                       onMouseLeave={() => setHover(null)}
+                      style={{cursor: 'pointer'}}
                     />
                   </label>
                 );
@@ -133,7 +139,7 @@ function FeedbackForm() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)} 
                 required 
-                disabled={!!user}
+                disabled={!!user} // Якщо залогінений, email не міняємо
               />
             </div>
           </div>
@@ -152,7 +158,7 @@ function FeedbackForm() {
         </form>
 
         <div className="reviews-list">
-          <h2>Останні відгуки користувачів</h2>
+          <h2>Останні відгуки користувачів </h2>
           {allReviews.map((rev) => (
             <div key={rev.id} className="booking-card review-item">
               <div className="review-header">
@@ -163,7 +169,8 @@ function FeedbackForm() {
               </div>
               <p>{rev.comment}</p>
               <small>
-                {rev.createdAt?.toDate().toLocaleDateString('uk-UA')}
+                {/* Форматування дати з об'єкта Firebase Timestamp */}
+                {rev.createdAt?.toDate ? rev.createdAt.toDate().toLocaleDateString('uk-UA') : "Щойно"}
               </small>
             </div>
           ))}
