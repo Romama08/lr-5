@@ -41,24 +41,28 @@ const fetchBookings = async (token) => {
 };
 
     const handleCancelBooking = async (id) => {
-        if (!window.confirm("Ви впевнені, що хочете скасувати це бронювання?")) return;
+    if (!window.confirm("Ви впевнені, що хочете скасувати це бронювання?")) return;
 
-        const token = localStorage.getItem('token');
-        try {
-            const res = await fetch(`/api/bookings/${id}`, {
-                method: 'DELETE',
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
+    const token = localStorage.getItem('token');
+    // Створюємо змінну з базовим URL вашого бекенду
+    const BACKEND_URL = 'https://lr-5.onrender.com'; 
 
-            if (res.ok) {
-                setBookings(bookings.filter(b => b.id !== id));
-            } else {
-                alert("Не вдалося скасувати бронювання на сервері");
-            }
-        } catch (error) {
-            console.error("Помилка при скасуванні:", error);
+    try {
+        // Додаємо BACKEND_URL перед роутом
+        const res = await fetch(`${BACKEND_URL}/api/bookings/${id}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (res.ok) {
+            setBookings(bookings.filter(b => b.id !== id));
+        } else {
+            alert("Не вдалося скасувати бронювання на сервері");
         }
-    };
+    } catch (error) {
+        console.error("Помилка при скасуванні:", error);
+    }
+};
 
     const handleAuthAction = async (e) => {
         e.preventDefault();
