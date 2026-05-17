@@ -44,11 +44,9 @@ const fetchBookings = async (token) => {
     if (!window.confirm("Ви впевнені, що хочете скасувати це бронювання?")) return;
 
     const token = localStorage.getItem('token');
-    // Створюємо змінну з базовим URL вашого бекенду
     const BACKEND_URL = 'https://lr-5.onrender.com'; 
 
     try {
-        // Додаємо BACKEND_URL перед роутом
         const res = await fetch(`${BACKEND_URL}/api/bookings/${id}`, {
             method: 'DELETE',
             headers: { 'Authorization': `Bearer ${token}` }

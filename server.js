@@ -15,8 +15,6 @@ const JWT_SECRET = process.env.JWT_SECRET || 'super_secret_key_123';
 app.use(cors());
 app.use(express.json());
 
-app.use(express.static(path.join(__dirname, 'build')));
-
 const authenticate = (req, res, next) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
@@ -31,6 +29,8 @@ const authenticate = (req, res, next) => {
         res.status(403).json({ error: "Недійсний або прострочений токен" });
     }
 };
+
+// ================= API МАРШРУТИ =================
 
 app.post('/api/auth/register', async (req, res) => {
     const { email, password } = req.body;
@@ -94,6 +94,40 @@ app.post('/api/bookings', authenticate, async (req, res) => {
     }
 });
 
+// 🔥 НОВИЙ МАРШРУТ: СКАСУВАННЯ БРОНЮВАННЯ
+app.delete('/api/bookings/:id', authenticate, async (req, res) => {
+    const bookingId = parseInt(req.params.id);
+
+    if (isNaN(bookingId)) {
+        return res.status(400).json({ error: "Некоректний ID бронювання" });
+    }
+
+    try {
+        // Перевіряємо, чи належить це бронювання користувачу, який робить запит
+        const booking = await prisma.booking.findUnique({
+            where: { id: bookingId }
+        });
+
+        if (!booking) {
+            return res.status(404).json({ error: "Бронювання не знайдено" });
+        }
+
+        if (booking.userId !== req.userId) {
+            return res.status(403).json({ error: "У вас немає прав для скасування цього бронювання" });
+        }
+
+        // Якщо все ок — видаляємо
+        await prisma.booking.delete({
+            where: { id: bookingId }
+        });
+
+        res.json({ message: "Бронювання успішно скасовано" });
+    } catch (e) {
+        console.error("Помилка при видаленні з БД:", e);
+        res.status(500).json({ error: "Не вдалося скасувати бронювання на сервері" });
+    }
+});
+
 app.get('/api/reviews/:eventId', async (req, res) => {
     const eventId = parseInt(req.params.eventId);
     try {
@@ -125,7 +159,13 @@ app.post('/api/reviews', authenticate, async (req, res) => {
     }
 });
 
-app.get(/.*/, (req, res) => {
+// ================= РОЗДАЧА КЛІЄНТСЬКОЇ ЧАСТИНИ (React) =================
+
+// Обробка статичних файлів (js, css, картинки)
+app.use(express.static(path.join(__dirname, 'build')));
+
+// Будь-який інший запит, що НЕ починається з /api, повертає React додаток
+app.get('*', (req, res) => {
     if (req.url.startsWith('/api')) {
         return res.status(404).json({ error: "API route not found" });
     }
