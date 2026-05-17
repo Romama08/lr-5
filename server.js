@@ -30,8 +30,6 @@ const authenticate = (req, res, next) => {
     }
 };
 
-// ================= API МАРШРУТИ =================
-
 app.post('/api/auth/register', async (req, res) => {
     const { email, password } = req.body;
     try {
@@ -94,7 +92,6 @@ app.post('/api/bookings', authenticate, async (req, res) => {
     }
 });
 
-// 🔥 НОВИЙ МАРШРУТ: СКАСУВАННЯ БРОНЮВАННЯ
 app.delete('/api/bookings/:id', authenticate, async (req, res) => {
     const bookingId = parseInt(req.params.id);
 
@@ -103,7 +100,6 @@ app.delete('/api/bookings/:id', authenticate, async (req, res) => {
     }
 
     try {
-        // Перевіряємо, чи належить це бронювання користувачу, який робить запит
         const booking = await prisma.booking.findUnique({
             where: { id: bookingId }
         });
@@ -116,7 +112,6 @@ app.delete('/api/bookings/:id', authenticate, async (req, res) => {
             return res.status(403).json({ error: "У вас немає прав для скасування цього бронювання" });
         }
 
-        // Якщо все ок — видаляємо
         await prisma.booking.delete({
             where: { id: bookingId }
         });
@@ -159,13 +154,9 @@ app.post('/api/reviews', authenticate, async (req, res) => {
     }
 });
 
-// ================= РОЗДАЧА КЛІЄНТСЬКОЇ ЧАСТИНИ (React) =================
-
-// Обробка статичних файлів (js, css, картинки)
 app.use(express.static(path.join(__dirname, 'build')));
 
-// Будь-який інший запит, що НЕ починається з /api, повертає React додаток
-app.get('*', (req, res) => {
+app.get('*catchall', (req, res) => {
     if (req.url.startsWith('/api')) {
         return res.status(404).json({ error: "API route not found" });
     }
